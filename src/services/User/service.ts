@@ -9,7 +9,7 @@ class UserService implements IUserService {
 
   async signIn(user: IUserLogIn): Promise<IUserLogInResults> {
     const query: string = "SELECT * FROM Usuario WHERE email = ? AND senha = ?";
-    const params: any[] = [user.email, user.senha];
+    const params: String[] = [user.email, user.senha];
 
     try {
       const [rows] = await db.conn.promise().query<RowDataPacket[]>(query, params);

@@ -9,11 +9,12 @@ class UserController {
       return
     }
 
-    if (validate.code !== 200) {
-      console.log("Erro ao fazer o login")
+    if (validate.code == 200) {
+      res.status(200).json(validate.user);
     }
 
-    console.log("Login efetuado com sucesso")
+    res.status(401).json({ message: validate.message } )
+
   }
 }
 
