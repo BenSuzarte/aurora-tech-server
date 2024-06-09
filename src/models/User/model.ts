@@ -1,3 +1,5 @@
+import { Results } from "@/models/results";
+
 export interface IUser {
   id?: string;
   email: string;
@@ -11,13 +13,11 @@ export interface IUserLogIn {
   senha: string;
 }
 
-export interface IUserLogInResults {
-  code: number;
-  message: string;
+export interface IUserResults extends Results {
   user?: IUser;
 }
 
 export interface IUserService {
-  createUser(user: IUser): IUser
-  signIn(user: IUserLogIn): Promise<IUserLogInResults>
+  createUser(user: IUser): Promise<IUserResults>
+  signIn(user: IUserLogIn): Promise<IUserResults>
 }

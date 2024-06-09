@@ -1,15 +1,43 @@
-import { RowDataPacket } from 'mysql2';
-import { IUser, IUserLogIn, IUserLogInResults, IUserService } from "@/models/User/model";
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import { IUser, IUserLogIn, IUserResults, IUserService } from "@/models/User/model";
 import db from '@/db-connection';
 
 class UserService implements IUserService {
-  createUser(user: IUser): IUser {
-    throw new Error("Method not implemented.");
+  async createUser(user: IUser): Promise<IUserResults> {
+    const query: string = "INSERT INTO Usuario (email, senha, nome, contato) VALUES (?, ?, ?, ?)";
+    const params: string[] = [user.email, user.senha, user.nome, user.contato];
+
+    try {
+      const [result] = await db.conn.promise().execute<ResultSetHeader>(query, params);
+      
+      if (result.affectedRows === 0) {
+        return { code: 404, message: "Erro ao criar o usuário, tente novamente mais tarde..." };
+      }
+
+      const insertId = result.insertId.toString();
+
+      if (!insertId) {
+        return { code: 404, message: "Houve um erro inesperado, tente novamente mais tarde..." };
+      }
+      
+      const newUser: IUser = {
+        id: insertId,
+        email: user.email,
+        senha: user.senha,
+        nome: user.nome,
+        contato: user.contato
+      };
+
+      return { code: 200, message: "Usuário criado com sucesso", user: newUser };
+    } catch (error) {
+      console.error("Erro ao criar usuário:", error);
+      return { code: 500, message: "Erro ao criar usuário" };
+    }
   }
 
-  async signIn(user: IUserLogIn): Promise<IUserLogInResults> {
+  async signIn(user: IUserLogIn): Promise<IUserResults> {
     const query: string = "SELECT * FROM Usuario WHERE email = ? AND senha = ?";
-    const params: String[] = [user.email, user.senha];
+    const params: string[] = [user.email, user.senha];
 
     try {
       const [rows] = await db.conn.promise().query<RowDataPacket[]>(query, params);
