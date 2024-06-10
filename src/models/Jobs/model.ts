@@ -2,6 +2,7 @@ import { Results } from "@/models/results";
 
 export interface IJobs {
   id?: string;
+  idUsuario?: string;
   titulo: string,
   descricao: string,
   localidade: string,
@@ -14,8 +15,6 @@ export interface IJobsResults extends Results {
 }
 
 export interface IJobsService {
-  createJob(job: IJobs): Promise<IJobsResults>
-  updateJob(job: IJobs): Promise<IJobsResults>
-  deleteJob(id: string): Promise<IJobsResults>
-  getJobs(): Promise<IJobsResults>
+  createJob(job: IJobs, idUsuario: string): Promise<IJobsResults>
+  getJobs(): Promise<IJobsResults[]>
 }

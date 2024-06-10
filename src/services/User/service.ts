@@ -4,6 +4,7 @@ import db from '@/db-connection';
 import CandidatoService from './Candidato/service';
 import { ICandidato } from '@/models/User/Candidato/model';
 import { IEmpresa } from '@/models/User/Empresa/model';
+import EmpresaService from './Empresa/service';
 
 class UserService implements IUserService {
 
@@ -17,19 +18,16 @@ class UserService implements IUserService {
 
   async addInDatabase(query: string, params: string[], user: ICandidato | IEmpresa): Promise<ResultSetHeader[]> {
     const [result] = await db.conn.promise().execute<ResultSetHeader>(query, params);
-    console.log("MOSTRANDO O RESULTADO \n", [result]);
   
     if (this.isCandidato(user)) {
       await CandidatoService.createCandidato(user as ICandidato, result.insertId.toString());
     }
 
-    return [result];
-  }
+    if (this.isEmpresa(user)) {
+      await EmpresaService.createEmpresa(user as IEmpresa, result.insertId.toString());
+    }
 
-  async verify(user: ICandidato | IEmpresa) {
-    const checkQuery: string = "SELECT id FROM Usuario WHERE email = ?";
-    const [checkResult] = await db.conn.promise().query<RowDataPacket[]>(checkQuery, [user.email]);
-    console.log("OLHANDO O CHECK RESULT!!!!!!!!", [checkResult])
+    return [result];
   }
 
   async createUser(user: ICandidato | IEmpresa): Promise<IUserResults> {
@@ -37,8 +35,15 @@ class UserService implements IUserService {
     const params: string[] = [user.email, user.senha, user.nome, user.contato];
   
     try {
-      await this.verify(user);
+      const checkQuery: string = "SELECT id FROM Usuario WHERE email = ?";
+      const [checkResult] = await db.conn.promise().query<RowDataPacket[]>(checkQuery, [user.email]);
+
+      if (checkResult.length > 0) {
+        return { code: 404, message: 'Este usuário já existe!'}
+      }
+
       const [result] = await this.addInDatabase(query, params, user)
+
       if (result.affectedRows === 0) {
         return { code: 404, message: "Erro ao criar o usuário, tente novamente mais tarde..." };
       }

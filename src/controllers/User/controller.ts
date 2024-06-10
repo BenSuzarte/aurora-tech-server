@@ -7,8 +7,6 @@ class UserController {
     try {
       const user = await UserService.createUser(req.body);
   
-      console.log(user);
-  
       if (!user) {
         return res.status(500).json({ message: "Erro ao criar o usuário, tente novamente mais tarde..." });
       }

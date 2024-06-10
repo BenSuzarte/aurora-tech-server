@@ -1,14 +1,14 @@
-import db from "@/db-connection";
-import { ICandidato, ICandidatoResults, ICandidatoService } from "@/models/User/Candidato/model";
+import db from '@/db-connection';
+import { IEmpresa, IEmpresaResults, IEmpresaService } from "@/models/User/Empresa/model";
 import { ResultSetHeader } from "mysql2";
 
-export class CandidatoService implements ICandidatoService {
-  async createCandidato(candidato: ICandidato, insertedId: string): Promise<ICandidatoResults> {
-    const query: string = "INSERT INTO Contratado (id, cpf, data_nascimento) VALUES (?, ?, ?)";
-    const params = [insertedId, candidato.cpf, candidato.data_nascimento];
+class EmpresaService implements IEmpresaService {
+  async createEmpresa(candidato: IEmpresa, insertedId: string): Promise<IEmpresaResults> {
+    const query: string = "INSERT INTO Empresa (id, cnpj, sede) VALUES (?, ?, ?)";
+    const params = [insertedId, candidato.cnpj, candidato.sede];
 
     try {
-
+      
       const [result] = await db.conn.promise().execute<ResultSetHeader>(query, params);
       
       if (result.affectedRows === 0) {
@@ -21,18 +21,18 @@ export class CandidatoService implements ICandidatoService {
         return { code: 404, message: "Houve um erro inesperado, tente novamente mais tarde..." };
       }
       
-      const newCandidato: ICandidato = {
+      const newCandidato: IEmpresa = {
         idUser: candidato.idUser,
         email: candidato.email,
         senha: candidato.senha,
         nome: candidato.nome,
         contato: candidato.contato,
-        idCandidato: insertId,
-        cpf: candidato.cpf,
-        data_nascimento: candidato.data_nascimento
+        idEmpresa: insertId,
+        cnpj: candidato.cnpj,
+        sede: candidato.sede
       };
 
-      return { code: 200, message: "Candidato criado com sucesso", candidato: newCandidato };
+      return { code: 200, message: "Candidato criado com sucesso", empresa: newCandidato };
     } catch (error) {
       console.error("Erro ao criar candidato:", error);
       return { code: 500, message: "Erro ao criar candidato" };
@@ -40,4 +40,4 @@ export class CandidatoService implements ICandidatoService {
   }
 }
 
-export default new CandidatoService();
+export default new EmpresaService();

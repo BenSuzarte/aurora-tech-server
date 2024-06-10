@@ -13,5 +13,5 @@ export interface IEmpresaResults extends Results {
 }
 
 export interface IEmpresaService {
-  createEmpresa(empresa: IEmpresa): Promise<IEmpresaResults>;
+  createEmpresa(empresa: IEmpresa, insertedId: string): Promise<IEmpresaResults>;
 }
