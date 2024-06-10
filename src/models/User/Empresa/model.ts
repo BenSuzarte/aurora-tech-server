@@ -1,7 +1,8 @@
 import { Results } from "@/models/results";
+import { IUser } from "../model";
 
-export interface IEmpresa {
-  id?: string;
+export interface IEmpresa extends IUser {
+  idEmpresa?: string;
   idUser: string;
   cnpj: string;
   sede: string;

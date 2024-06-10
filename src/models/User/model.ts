@@ -1,11 +1,19 @@
 import { Results } from "@/models/results";
+import { ICandidato } from "./Candidato/model";
+import { IEmpresa } from "./Empresa/model";
 
 export interface IUser {
-  id?: string;
+  idUser?: string;
   email: string;
   nome: string;
   senha: string;
   contato: string;
+  UType?: string;
+}
+
+export interface IUserCandidato {
+  email: string;
+  senha: string;
 }
 
 export interface IUserLogIn {
@@ -18,6 +26,6 @@ export interface IUserResults extends Results {
 }
 
 export interface IUserService {
-  createUser(user: IUser): Promise<IUserResults>
+  createUser(user: ICandidato | IEmpresa): Promise<IUserResults>
   signIn(user: IUserLogIn): Promise<IUserResults>
 }

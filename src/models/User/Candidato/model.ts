@@ -1,16 +1,16 @@
 import { Results } from "@/models/results";
+import { IUser } from "../model";
 
-export interface ICandidato {
-  id?: string;
-  idUser: string;
+export interface ICandidato extends IUser {
+  idCandidato?: string;
   cpf: string;
   data_nascimento: string;
 }
 
 export interface ICandidatoResults extends Results {
-    candidato?: ICandidato;
+  candidato?: ICandidato;
 }
 
 export interface ICandidatoService {
-  createCandidato(candidato: ICandidato): Promise<ICandidatoResults>;
+  createCandidato(candidato: ICandidato, insertedId: string): Promise<ICandidatoResults>;
 }

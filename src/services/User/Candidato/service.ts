@@ -1,14 +1,18 @@
+import UserService from '@/services/User/service';
 import db from "@/db-connection";
 import { ICandidato, ICandidatoResults, ICandidatoService } from "@/models/User/Candidato/model";
 import { ResultSetHeader } from "mysql2";
 
 export class CandidatoService implements ICandidatoService {
-  async createCandidato(candidato: ICandidato): Promise<ICandidatoResults> {
-    const query: string = "INSERT INTO Contratado (idUser, cpf, data_nascimento) VALUES (?, ?, ?)";
-    const params: (string | number)[] = [candidato.idUser, candidato.cpf, candidato.data_nascimento];
+  async createCandidato(candidato: ICandidato, insertedId: string): Promise<ICandidatoResults> {
+    const candidatoQuery: string = "INSERT INTO Contratado (id, cpf, data_nascimento) VALUES (?, ?, ?)";
+    const candidatoParams = [insertedId, candidato.cpf, candidato.data_nascimento];
 
     try {
-      const [result] = await db.conn.promise().execute<ResultSetHeader>(query, params);
+      console.log(candidatoParams);
+
+      const [result] = await db.conn.promise().execute<ResultSetHeader>(candidatoQuery, candidatoParams);
+      console.log(result);
       
       if (result.affectedRows === 0) {
         return { code: 404, message: "Erro ao criar o candidato, tente novamente mais tarde..." };
@@ -21,11 +25,17 @@ export class CandidatoService implements ICandidatoService {
       }
       
       const newCandidato: ICandidato = {
-        id: insertId,
         idUser: candidato.idUser,
+        email: candidato.email,
+        senha: candidato.senha,
+        nome: candidato.nome,
+        contato: candidato.contato,
+        idCandidato: insertId,
         cpf: candidato.cpf,
         data_nascimento: candidato.data_nascimento
       };
+
+      console.log(newCandidato)
 
       return { code: 200, message: "Candidato criado com sucesso", candidato: newCandidato };
     } catch (error) {
