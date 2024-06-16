@@ -23,6 +23,26 @@ class JobController {
       });
     }
   }
+
+  async getJobs(req: Request, res: Response) {
+    const validate = await JobsService.getJobs();
+
+    if (!validate) {
+      return res.status(500).json({
+        message: 'Erro de conexão interno'
+      });
+    }
+
+    if (validate.code === 404) {
+      return res.status(404).json({
+        message: validate.message
+      });
+    }
+
+    if (validate.code === 201) {
+      return res.status(201).json(validate.getJobs);
+    }
+  }
 }
 
 export default new JobController();

@@ -40,8 +40,24 @@ class JobsService implements IJobsService {
     }
 
   }
-  getJobs(): Promise<IJobsResults[]> {
-    throw new Error("Method not implemented.");
+  async getJobs(): Promise<IJobsResults> {
+    const query = "SELECT * FROM Vagas"
+
+    try {
+      
+      const [result] = await db.conn.promise().execute(query)
+
+      if (!result) {
+        return { code: 404, message: "Erro ao buscar as vagas, tente novamente mais tarde..." };
+      }
+
+      const jobs: IJobs[] = result as IJobs[]
+
+      return {code: 201, message: 'Job successfully', getJobs: jobs};
+
+    } catch (err) {
+      return {code: 500, message: 'Erro interno de conexão'}
+    }
   }
 }
 

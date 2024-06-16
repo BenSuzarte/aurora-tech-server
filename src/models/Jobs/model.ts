@@ -12,9 +12,10 @@ export interface IJobs {
 
 export interface IJobsResults extends Results {
   job?: IJobs;
+  getJobs?: IJobs[]
 }
 
 export interface IJobsService {
   createJob(job: IJobs, idUsuario: string): Promise<IJobsResults>
-  getJobs(): Promise<IJobsResults[]>
+  getJobs(): Promise<IJobsResults>
 }

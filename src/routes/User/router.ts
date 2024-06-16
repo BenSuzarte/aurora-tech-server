@@ -5,7 +5,7 @@ import express from 'express';
 const router = express.Router();
 
 //GETs
-
+  router.get('/jobs', JobController.getJobs)
 
 //POSTs
   router.post('/login', UserController.validateUser);
